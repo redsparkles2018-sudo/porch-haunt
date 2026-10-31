@@ -1,0 +1,25 @@
+# Local dependencies and downloaded detector assets
+node_modules/
+dist/vendor/
+dist/model/
+
+# Personal voice recordings and generated files
+dist/sounds/*
+!dist/sounds/howl.wav
+!dist/sounds/laugh.wav
+!dist/sounds/creak.wav
+preview.png
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+
+# Credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+.cloudflared/
+.codex/
+.agents/
+*.pem
+*.key

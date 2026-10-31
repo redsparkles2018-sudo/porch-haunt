@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#241a32">
+  <title>Porch Haunt · Halloween sound trap</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='85'%3E👻%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <script defer src="/vendor/tf.min.js"></script>
+  <script defer src="/vendor/coco-ssd.min.js"></script>
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+<main>
+  <header><a class="brand" href="/" aria-label="Porch Haunt home"><svg viewBox="0 0 48 52" aria-hidden="true"><path d="M7 46V22a17 17 0 0 1 34 0v24l-8-6-9 7-9-7Z" fill="currentColor"/><ellipse cx="18" cy="23" rx="3" ry="5" fill="#241a32"/><ellipse cx="30" cy="23" rx="3" ry="5" fill="#241a32"/></svg>Porch Haunt</a><span class="date">Halloween night</span></header>
+  <div class="intro"><h1>A little fright.<br>A lot of fun.</h1><p>Turn your spare iPhone into a sound trap for the front porch.</p></div>
+  <div class="workspace">
+    <section class="watch" aria-label="Camera and Halloween controls">
+      <div class="camera" id="cameraBox">
+        <video id="video" autoplay muted playsinline webkit-playsinline></video><canvas id="overlay"></canvas>
+        <div class="camera-empty" id="cameraEmpty"><svg viewBox="0 0 100 112" aria-hidden="true"><path d="M16 102V48a34 34 0 0 1 68 0v54l-17-12-17 14-17-14Z" fill="currentColor"/><ellipse cx="38" cy="49" rx="6" ry="9" fill="#372a44"/><ellipse cx="62" cy="49" rx="6" ry="9" fill="#372a44"/><path d="M43 73q7-10 14 0" fill="none" stroke="#372a44" stroke-width="5" stroke-linecap="round"/></svg><strong>Your porch, on watch.</strong><span>Start the camera to frame your entrance.</span></div>
+        <span class="camera-tag" id="cameraTag">Camera off</span>
+      </div>
+      <div class="status-row"><span class="status-dot" id="statusDot"></span><div><strong id="statusTitle">Let’s set the scene</strong><p id="statusText" role="status" aria-live="polite">Pair your Bluetooth speaker, then start the camera.</p></div></div>
+      <div class="actions"><button id="start" class="primary">Start camera</button><button id="arm" class="primary" hidden>Arm the haunt</button><button id="disarm" class="primary" hidden>Disarm</button><button id="test" class="secondary">Test sound</button></div>
+      <div class="camera-actions"><button id="flip" disabled>Switch camera</button><button id="stop" disabled>Turn camera off</button><span id="count">0 scares tonight</span></div>
+      <div class="notice" id="error" role="alert" hidden></div>
+    </section>
+    <aside>
+      <section class="settings"><h2>Set your scare</h2>
+        <label for="sound">Sound</label><select id="sound"><option value="random">Surprise me · random sound & voice</option></select>
+        <label class="upload" for="upload">＋ Add your own audio<input id="upload" type="file" accept="audio/*" multiple></label><p class="hint" id="uploadHint">Your files stay on this phone for this visit.</p>
+        <label for="volume">Effect volume <output id="volumeOut">50%</output></label><input id="volume" type="range" min="0" max="100" value="50"><p class="hint">Also adjust the iPhone and speaker volume.</p>
+        <label for="delay">Delay after detection <output id="delayOut">0 sec</output></label><input id="delay" type="range" min="0" max="10" step="0.5" value="0"><p class="hint">Wait before playing the sound. Changes apply to the next detection. Test sound plays immediately.</p>
+        <label for="cooldown">Time between scares <output id="cooldownOut">30 sec</output></label><input id="cooldown" type="range" min="10" max="120" step="5" value="30">
+        <details><summary>Fine-tune detection</summary>
+          <label for="zone">Centre detection area <output id="zoneOut">80%</output></label><input id="zone" type="range" min="30" max="100" step="5" value="80"><p class="hint">Only people whose feet are inside the outlined area can trigger a sound.</p>
+          <label for="size">Minimum person height <output id="sizeOut">20%</output></label><input id="size" type="range" min="10" max="70" step="5" value="20"><p class="hint">Raise this to ignore people farther away.</p>
+          <label for="confidence">Detection confidence <output id="confidenceOut">55%</output></label><input id="confidence" type="range" min="35" max="85" step="5" value="55"><p class="hint">Lower this if costumes are being missed.</p>
+        </details>
+      </section>
+      <section class="setup"><h2>Ready for visitors</h2><ol><li>Pair the iPhone with your Bluetooth speaker.</li><li>Open this page in Safari on the iPhone. Allow the camera.</li><li>Point the rear camera at a lit entrance. Test your sound, then arm.</li></ol><p id="wakeNote">Keep this page open, the screen awake, and the phone plugged in. If needed, set Auto-Lock to Never.</p></section>
+    </aside>
+  </div>
+  <footer><span>A person arrives. A sound plays. The next group gets a turn.</span><span>Camera processing stays on your device. No video is uploaded or recorded.</span></footer>
+</main>
+</body></html>
