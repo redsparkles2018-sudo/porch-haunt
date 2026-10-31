@@ -1,5 +1,6 @@
 import { ArrivalGate, inZone } from './detection.mjs';
 import { SOUND_CATALOG } from './sound-catalog.mjs';
+import { TorchPulse, supportsTorch } from './torch-pulse.mjs';
 
 const $ = id => document.getElementById(id);
 const video = $('video'), canvas = $('overlay'), ctx = canvas.getContext('2d');
@@ -8,6 +9,7 @@ const sounds = new Map();
 let stream, model, modelPromise, audio, gain, currentSound, wakeLock, lastSound;
 let armed = false, starting = false, loadingAudio, loopVersion = 0, facing = 'environment', scares = 0;
 let pendingSound = null, soundDueAt = 0;
+let torchPulse = null;
 const settings = () => ({ zone: +$('zone').value / 100, minHeight: +$('size').value / 100, confidence: +$('confidence').value / 100 });
 for (const groupName of new Set(SOUND_CATALOG.map(sound => sound.group))) {
   const group = document.createElement('optgroup');
@@ -30,6 +32,8 @@ function controls() {
   $('disarm').hidden = !armed;
   $('flip').disabled = !stream || starting || armed;
   $('stop').disabled = !stream || starting;
+  $('flash').disabled = !torchPulse;
+  $('testFlash').disabled = !torchPulse || armed || starting;
 }
 function unlockAudio() {
   if (!audio) {
@@ -107,6 +111,17 @@ async function startCamera() {
     assetsReady.catch(() => {});
     stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: facing }, width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 12, max: 15 } } });
     stream.getVideoTracks()[0].addEventListener('ended', () => { if (stream) { stopCamera(); report('The camera stopped. Tap Start camera to reconnect it.'); } });
+    const track = stream.getVideoTracks()[0];
+    if (supportsTorch(track)) {
+      torchPulse = new TorchPulse(track, () => {
+        stopCamera();
+        report('Camera light control failed. The camera was turned off to release the light. Start it again and leave the flash toggle off.');
+      });
+      $('flashHint').textContent = 'Pulse the rear camera light for 5 seconds when a scary sound starts.';
+    } else {
+      $('flash').checked = false;
+      $('flashHint').textContent = 'This camera or Safari version does not provide light control. Try the rear camera. Sounds still work.';
+    }
     video.srcObject = stream;
     await video.play();
     video.classList.add('live'); $('cameraEmpty').hidden = true;
@@ -127,6 +142,7 @@ async function startCamera() {
 }
 function disarm() {
   clearTimeout(pendingSound); pendingSound = null; soundDueAt = 0;
+  void torchPulse?.stop();
   armed = false; silence(); controls();
   if (stream) { $('cameraTag').textContent = 'Preview · disarmed'; status('Haunt disarmed', 'The camera is previewing. Tap Arm the haunt when you’re ready.', false); }
 }
@@ -138,6 +154,7 @@ function scheduleScare(now) {
     if (!armed || !stream || document.hidden) return;
     try {
       playSound(); scares++;
+      if ($('flash').checked) torchPulse?.start();
       // The cooldown starts when the sound actually plays.
       gate.lastScare = performance.now();
       $('count').textContent = scares + (scares === 1 ? ' scare tonight' : ' scares tonight');
@@ -149,10 +166,12 @@ function scheduleScare(now) {
 function stopCamera() {
   disarm(); loopVersion++;
   const old = stream; stream = null;
+  torchPulse = null;
   old?.getTracks().forEach(track => track.stop());
   video.srcObject = null; video.classList.remove('live');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   $('cameraEmpty').hidden = false; $('cameraTag').textContent = 'Camera off';
+  $('flashHint').textContent = 'Start the rear camera to check whether its light is available.';
   wakeLock?.release().catch(() => {}); wakeLock = null;
   status('Camera is off', 'Start the camera when you’re ready.', false); controls();
 }
@@ -220,6 +239,8 @@ $('arm').addEventListener('click', async () => {
   } catch (error) { report(error.message); }
 });
 $('disarm').addEventListener('click', disarm);
+$('flash').addEventListener('change', () => { if (!$('flash').checked) void torchPulse?.stop(); });
+$('testFlash').addEventListener('click', () => torchPulse?.start());
 $('test').addEventListener('click', async () => {
   $('test').disabled = true;
   try { await unlockAudio(); await loadSounds(); report(''); playSound(); }
@@ -250,6 +271,7 @@ $('upload').addEventListener('change', async event => {
   event.target.value = '';
 });
 document.addEventListener('visibilitychange', () => {
+  if (document.hidden) void torchPulse?.stop();
   if (document.hidden && armed) { disarm(); report('The haunt paused because Safari was hidden or the phone locked. Return to this page and tap Arm the haunt.'); }
   if (!document.hidden) keepAwake();
 });

@@ -24,6 +24,10 @@ On a Mac, `python3 scripts/make-voices.py` optionally generates two character la
 
 The iPhone X/XR’s actual performance, Bluetooth routing, speaker sleep behavior, costume recognition, and evening lighting need a real-device test. Camera access uses no microphone. No Sonos or doorbell integration is required. The temporary HTTPS link uses Cloudflare as transport; all detector files are served with the app, and inference stays in the browser.
 
+## Camera light effect
+
+After starting a supported rear camera, enable **Pulse camera light** to pulse the iPhone torch for five seconds whenever a detected-person sound starts. It follows the sound delay and is off by default. Use **Test light · 5 sec** while disarmed to try it without a sound. The effect alternates light on/off every half-second. Disarming, disabling the toggle, turning off the camera, or hiding Safari cancels the effect and requests light-off. Camera hardware and Safari must expose torch control; if unavailable, the control stays disabled and sounds continue to work. A light-control error releases the camera so the torch cannot remain on.
+
 ## Checks
 
 `npm test` verifies person filtering, arrival confirmation, cooldowns, and group rearming. `node --check dist/app.mjs` checks app syntax. Stop the app and tunnel with Ctrl-C when finished.
