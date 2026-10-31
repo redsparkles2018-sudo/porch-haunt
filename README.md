@@ -26,7 +26,7 @@ The iPhone X/XR’s actual performance, Bluetooth routing, speaker sleep behavio
 
 ## Camera light effect
 
-After starting a supported rear camera, enable **Pulse camera light** to pulse the iPhone torch for five seconds whenever a detected-person sound starts. It follows the sound delay and is off by default. Use **Test light · 5 sec** while disarmed to try it without a sound. The effect alternates light on/off every half-second. Disarming, disabling the toggle, turning off the camera, or hiding Safari cancels the effect and requests light-off. Camera hardware and Safari must expose torch control; if unavailable, the control stays disabled and sounds continue to work. A light-control error releases the camera so the torch cannot remain on.
+After starting a supported rear camera, enable **Lightning flashes** to flash the iPhone torch for five seconds whenever a detected-person sound starts. It follows the sound delay and is off by default. Use **Test lightning · 5 sec** while disarmed to try it without a sound. The effect uses randomized short single and double strikes with uneven dark pauses; each activation creates a fresh pattern. Actual flash timing also depends on camera hardware response. Disarming, disabling the toggle, turning off the camera, or hiding Safari cancels the effect and requests light-off. Camera hardware and Safari must expose torch control; if unavailable, the control stays disabled and sounds continue to work. A light-control error releases the camera so the torch cannot remain on.
 
 ## Checks
 

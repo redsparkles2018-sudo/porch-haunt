@@ -117,7 +117,7 @@ async function startCamera() {
         stopCamera();
         report('Camera light control failed. The camera was turned off to release the light. Start it again and leave the flash toggle off.');
       });
-      $('flashHint').textContent = 'Pulse the rear camera light for 5 seconds when a scary sound starts.';
+      $('flashHint').textContent = 'Irregular single and double lightning flashes for 5 seconds when a scary sound starts.';
     } else {
       $('flash').checked = false;
       $('flashHint').textContent = 'This camera or Safari version does not provide light control. Try the rear camera. Sounds still work.';
